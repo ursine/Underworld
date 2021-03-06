@@ -35,3 +35,6 @@
 cmake-build-debug
 CMakeFiles
 vulkantest
+
+# IDE files
+.idea
