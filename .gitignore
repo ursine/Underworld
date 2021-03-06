@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+
+# CMake Files
+cmake-build-debug
+CMakeFiles
+vulkantest

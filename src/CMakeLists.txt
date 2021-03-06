@@ -1,0 +1,1 @@
+add_executable(vulkantest main.cpp)
