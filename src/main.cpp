@@ -14,11 +14,15 @@ const std::vector<const char*> validationLayers = {
     "VK_LAYER_KHRONOS_validation"
 };
 
+constexpr bool debugBuild() {
 #ifdef NDEBUG
-const bool enableValidationLayers = false;
+return false;
 #else
-const bool enableValidationLayers = true;
+return true;
 #endif
+}
+
+constexpr bool enableValidationLayers = debugBuild();
 
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
@@ -88,22 +92,13 @@ private:
             throw std::runtime_error("validation layers requested, but not available!");
         }
 
-        TDGApplicationInfo app;
-        app.applicationName("Hello Triangle");
-
-        std::cout << app << std::endl;
-
-        VkApplicationInfo appInfo{};
-        appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appInfo.pApplicationName = "Hello Triangle";
-        appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.pEngineName = "No Engine";
-        appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.apiVersion = VK_API_VERSION_1_0;
+        TDGApplicationInfo appInfo;
+        appInfo.applicationName("Hello Triangle").applicationVersion(1,0,0).
+            engineName("No Engine").engineVersion(1,0,0);
 
         VkInstanceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        createInfo.pApplicationInfo = &appInfo;
+        createInfo.pApplicationInfo = appInfo.ptr();
 
         auto extensions = getRequiredExtensions();
         createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());

@@ -3,6 +3,7 @@
 #include <vulkan/vulkan.h>
 #include <string>
 #include <ostream>
+#include <sstream>
 
 class TDGVulkan {
 private:
@@ -18,6 +19,13 @@ public:
     }
 };
 
+
+std::string versionAsString(const uint32_t version) {
+    std::ostringstream out;
+    out << VK_VERSION_MAJOR(version) << "." << VK_VERSION_MINOR(version) << "." << VK_VERSION_PATCH(version);
+    return out.str();
+}
+
 class TDGApplicationInfo {
 private:
     VkApplicationInfo appInfo{};
@@ -27,7 +35,12 @@ private:
 public:
     TDGApplicationInfo() {
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+        appInfo.apiVersion = VK_API_VERSION_1_2;  // TODO: Code to figure out available version
     }
+
+    [[nodiscard]] VkStructureType sType() const { return appInfo.sType; }
+    [[nodiscard]] uint32_t apiVersion() const { return appInfo.apiVersion; }
+    [[nodiscard]] std::string apiVersionAsStr() const { return versionAsString(appInfo.apiVersion); }
 
     // Next
     [[nodiscard]] const void* next() const { return appInfo.pNext; }
@@ -52,6 +65,10 @@ public:
         return appInfo.applicationVersion;
     }
 
+    [[nodiscard]] std::string applicationVersionAsStr() const {
+        return versionAsString(appInfo.applicationVersion);
+    }
+
     TDGApplicationInfo& applicationVersion(const int major, const int minor, const int patch) {
         appInfo.applicationVersion = VK_MAKE_VERSION(major, minor, patch);
         return *this;
@@ -67,19 +84,35 @@ public:
         return *this;
     }
 
+    // Application Versions
+    [[nodiscard]] uint32_t engineVersion() const {
+        return appInfo.engineVersion;
+    }
 
-    uint32_t           engineVersion;
-    uint32_t           apiVersion;
+    [[nodiscard]] std::string engineVersionAsStr() const {
+        return versionAsString(appInfo.engineVersion);
+    }
 
-    //
-    //appInfo.pEngineName = "No Engine";
-    //appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    //appInfo.apiVersion = VK_API_VERSION_1_0;
+    TDGApplicationInfo& engineVersion(const int major, const int minor, const int patch) {
+        appInfo.engineVersion = VK_MAKE_VERSION(major, minor, patch);
+        return *this;
+    }
+
+    // TODO: This is temporary
+    VkApplicationInfo* ptr() { return &appInfo; }
 };
+
 
 std::ostream& operator<<(std::ostream &os, const TDGApplicationInfo& foo)
 {
-    os << "TDGApplicationInfo{" << "}";
+    os << "TDGApplicationInfo{" <<
+        "sType=" << foo.sType() << ", " <<
+        "pNext=" << foo.next() << ", " <<
+        "pApplicationName=" << foo.applicationName() << ", " <<
+        "applicationVersion=" << foo.applicationVersionAsStr() << ", " <<
+        "pEngineName=" << foo.engineName() << ", " <<
+        "engineVersion=" << foo.engineVersionAsStr() << ", " <<
+        "apiVersion=" << foo.apiVersionAsStr() << "}";
     return os;
 }
 
