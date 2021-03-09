@@ -1,0 +1,36 @@
+[settings]
+    arch=x86_64
+    build_type=Debug
+    compiler=gcc
+    compiler.libcxx=libstdc++11
+    compiler.version=7
+    os=Linux
+
+[requires]
+    tinyobjloader/1.Y.Z
+
+[options]
+
+
+[full_settings]
+    arch=x86_64
+    arch_build=x86_64
+    build_type=Debug
+    compiler=gcc
+    compiler.libcxx=libstdc++11
+    compiler.version=7
+    os=Linux
+    os_build=Linux
+
+[full_requires]
+    tinyobjloader/1.0.6:1a651c5b4129ad794b88522bece2281a7453aee4
+
+[full_options]
+    tinyobjloader:fPIC=True
+    tinyobjloader:shared=False
+
+[recipe_hash]
+
+
+[env]
+

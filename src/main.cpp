@@ -11,8 +11,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-//#define TINYOBJLOADER_IMPLEMENTATION
-//#include <tiny_obj_loader.h>
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
 
 #include <iostream>
 #include <fstream>
@@ -242,7 +242,7 @@ private:
         createTextureImage();
         createTextureImageView();
         createTextureSampler();
-        //loadModel();
+        loadModel();
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffers();
@@ -1147,14 +1147,15 @@ private:
         endSingleTimeCommands(commandBuffer);
     }
 
-/*    void loadModel() {
+    void loadModel() {
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> materials;
-        std::string warn, err;
+        std::string err;
 
-        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) {
-            throw std::runtime_error(warn + err);
+        if (!tinyobj:: LoadObj(&attrib, &shapes, &materials, &err, MODEL_PATH.c_str())) {
+            const std::string theError = "File: "+MODEL_PATH+" : "+err;
+            throw std::runtime_error(theError);
         }
 
         std::unordered_map<Vertex, uint32_t> uniqueVertices{};
@@ -1184,7 +1185,7 @@ private:
                 indices.push_back(uniqueVertices[vertex]);
             }
         }
-    }*/
+    }
 
     void createVertexBuffer() {
         VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
@@ -1731,7 +1732,7 @@ private:
         std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
         if (!file.is_open()) {
-            throw std::runtime_error("failed to open file!");
+            throw std::runtime_error("failed to open file '"+filename+"' !");
         }
 
         size_t fileSize = (size_t) file.tellg();

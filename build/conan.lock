@@ -1,0 +1,20 @@
+{
+ "profile_host": "[settings]\narch=x86_64\narch_build=x86_64\nbuild_type=Debug\ncompiler=gcc\ncompiler.libcxx=libstdc++11\ncompiler.version=7\nos=Linux\nos_build=Linux\n[options]\n[build_requires]\n[env]\n",
+ "graph_lock": {
+  "nodes": {
+   "0": {
+    "pref": null,
+    "options": "tinyobjloader:fPIC=True\ntinyobjloader:shared=False",
+    "requires": [
+     "1"
+    ],
+    "path": "/home/bear/VULKAN/Underworld/build/conanfile.txt"
+   },
+   "1": {
+    "pref": "tinyobjloader/1.0.6#0:1a651c5b4129ad794b88522bece2281a7453aee4#0",
+    "options": "fPIC=True\nshared=False"
+   }
+  }
+ },
+ "version": "0.3"
+}

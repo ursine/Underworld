@@ -1,0 +1,18 @@
+{
+ "options": [
+  [
+   "tinyobjloader:fPIC",
+   "True"
+  ],
+  [
+   "tinyobjloader:shared",
+   "False"
+  ]
+ ],
+ "root": {
+  "name": null,
+  "version": null,
+  "user": null,
+  "channel": null
+ }
+}
