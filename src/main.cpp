@@ -9,10 +9,10 @@
 #include <glm/gtx/hash.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "stb_image.h"
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
+//#define TINYOBJLOADER_IMPLEMENTATION
+//#include <tiny_obj_loader.h>
 
 #include <iostream>
 #include <fstream>
@@ -242,7 +242,7 @@ private:
         createTextureImage();
         createTextureImageView();
         createTextureSampler();
-        loadModel();
+        //loadModel();
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffers();
@@ -1147,7 +1147,7 @@ private:
         endSingleTimeCommands(commandBuffer);
     }
 
-    void loadModel() {
+/*    void loadModel() {
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> materials;
@@ -1184,7 +1184,7 @@ private:
                 indices.push_back(uniqueVertices[vertex]);
             }
         }
-    }
+    }*/
 
     void createVertexBuffer() {
         VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
