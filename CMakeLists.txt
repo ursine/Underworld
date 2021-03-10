@@ -15,7 +15,7 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_configure(REQUIRES tinyobjloader/1.0.6
+conan_cmake_configure(REQUIRES tinyobjloader/1.0.6 glm/0.9.9.5
         GENERATORS cmake_find_package)
 
 conan_cmake_autodetect(settings)
@@ -27,7 +27,6 @@ conan_cmake_install(PATH_OR_REFERENCE .
 
 IF (WIN32)
 add_subdirectory(E:/glfw3 thirdparty/glfw3)
-find_package(glfw3 REQUIRED FATAL_ERROR)
 ENDIF()
 
 add_subdirectory(src)
