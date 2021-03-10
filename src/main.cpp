@@ -8,13 +8,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/hash.hpp>
 
+#include <iostream>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
-#include <iostream>
 #include <fstream>
 #include <stdexcept>
 #include <algorithm>
@@ -863,7 +864,8 @@ private:
         mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
 
         if (!pixels) {
-            throw std::runtime_error("failed to load texture image!");
+            const std::string err = "Failed to load texture image: " + TEXTURE_PATH;
+            throw std::runtime_error(err);
         }
 
         VkBuffer stagingBuffer;
