@@ -15,7 +15,7 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-conan_cmake_configure(REQUIRES tinyobjloader/1.0.6 glm/0.9.9.5
+conan_cmake_configure(REQUIRES tinyobjloader/1.0.6 glm/0.9.9.5 glslang/8.13.3559
         GENERATORS cmake_find_package)
 
 conan_cmake_autodetect(settings)
