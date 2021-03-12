@@ -1,118 +1,96 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
 #include <string>
 #include <ostream>
 #include <sstream>
 
-class TDGVulkan {
-private:
-    VkInstance instance;
+namespace tdg {
 
-public:
-    TDGVulkan() {
-
+    std::string versionAsString(const uint32_t version) {
+        std::ostringstream out;
+        out << VK_VERSION_MAJOR(version) << "." << VK_VERSION_MINOR(version) << "." << VK_VERSION_PATCH(version);
+        return out.str();
     }
 
-    ~TDGVulkan() {
-        vkDestroyInstance(instance, nullptr);
+    template<typename T>
+    void clear(T* obj) {
+        memset(obj, 0, sizeof(T));
     }
-};
 
+    struct ApplicationInfo : public ::VkApplicationInfo {
+        ApplicationInfo() : VkApplicationInfo() {
+            clear(this);
+            sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+            apiVersion = VK_API_VERSION_1_1;
+        }
 
-std::string versionAsString(const uint32_t version) {
-    std::ostringstream out;
-    out << VK_VERSION_MAJOR(version) << "." << VK_VERSION_MINOR(version) << "." << VK_VERSION_PATCH(version);
-    return out.str();
+        [[nodiscard]] std::string applicationVersionString() const {
+            return versionAsString(applicationVersion);
+        }
+
+        ApplicationInfo* setApplicationVersion(const int major, const int minor, const int patch) {
+            applicationVersion = VK_MAKE_VERSION(major,minor,patch);
+            return this;
+        }
+
+        [[nodiscard]] std::string engineVersionString() const {
+            return versionAsString(engineVersion);
+        }
+
+        ApplicationInfo* setEngineVersion(const int major, const int minor, const int patch) {
+            engineVersion = VK_MAKE_VERSION(major,minor,patch);
+            return this;
+        }
+
+        [[nodiscard]] std::string apiVersionString() const {
+            return versionAsString(apiVersion);
+        }
+    };
+
+    static_assert(sizeof(ApplicationInfo)==sizeof(::VkApplicationInfo));
+
+    const uint32_t WIDTH = 800;
+    const uint32_t HEIGHT = 600;
+
+    class GLFWHost {
+    private:
+        GLFWwindow* window;
+
+    public:
+        GLFWHost() {
+            glfwInit();   // Initialize the windowing system
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // Don't make an OpenGL context
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // Don't allow resizing
+
+            // Create a window to do the work in
+            window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+        }
+
+        ~GLFWHost() {
+            glfwDestroyWindow(window);
+            glfwTerminate();
+        }
+
+        void loop() {
+            while (!glfwWindowShouldClose(window)) {
+                glfwPollEvents();
+            }
+        }
+    };
+
 }
 
-class TDGApplicationInfo {
-private:
-    VkApplicationInfo appInfo{};
 
-    // Holding on for dear life
-
-public:
-    TDGApplicationInfo() {
-        appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appInfo.apiVersion = VK_API_VERSION_1_2;  // TODO: Code to figure out available version
-    }
-
-    [[nodiscard]] VkStructureType sType() const { return appInfo.sType; }
-    [[nodiscard]] uint32_t apiVersion() const { return appInfo.apiVersion; }
-    [[nodiscard]] std::string apiVersionAsStr() const { return versionAsString(appInfo.apiVersion); }
-
-    // Next
-    [[nodiscard]] const void* next() const { return appInfo.pNext; }
-
-    TDGApplicationInfo& next(const void* pNext) {
-        appInfo.pNext = pNext;
-        return *this;
-    }
-
-    // Application Name
-    [[nodiscard]] std::string applicationName() const {
-        return std::string(appInfo.pApplicationName);
-    }
-
-    TDGApplicationInfo& applicationName(const char* appName) {
-        appInfo.pApplicationName = appName;
-        return *this;
-    }
-
-    // Application Versions
-    [[nodiscard]] uint32_t applicationVersion() const {
-        return appInfo.applicationVersion;
-    }
-
-    [[nodiscard]] std::string applicationVersionAsStr() const {
-        return versionAsString(appInfo.applicationVersion);
-    }
-
-    TDGApplicationInfo& applicationVersion(const int major, const int minor, const int patch) {
-        appInfo.applicationVersion = VK_MAKE_VERSION(major, minor, patch);
-        return *this;
-    }
-
-    // Engine Name
-    [[nodiscard]] std::string engineName() const {
-        return std::string(appInfo.pEngineName);
-    }
-
-    TDGApplicationInfo& engineName(const char* engineName) {
-        appInfo.pEngineName = engineName;
-        return *this;
-    }
-
-    // Application Versions
-    [[nodiscard]] uint32_t engineVersion() const {
-        return appInfo.engineVersion;
-    }
-
-    [[nodiscard]] std::string engineVersionAsStr() const {
-        return versionAsString(appInfo.engineVersion);
-    }
-
-    TDGApplicationInfo& engineVersion(const int major, const int minor, const int patch) {
-        appInfo.engineVersion = VK_MAKE_VERSION(major, minor, patch);
-        return *this;
-    }
-
-    // TODO: This is temporary
-    VkApplicationInfo* ptr() { return &appInfo; }
-};
-
-
-std::ostream& operator<<(std::ostream &os, const TDGApplicationInfo& foo)
-{
-    os << "TDGApplicationInfo{" <<
-        "sType=" << foo.sType() << ", " <<
-        "pNext=" << foo.next() << ", " <<
-        "pApplicationName=" << foo.applicationName() << ", " <<
-        "applicationVersion=" << foo.applicationVersionAsStr() << ", " <<
-        "pEngineName=" << foo.engineName() << ", " <<
-        "engineVersion=" << foo.engineVersionAsStr() << ", " <<
-        "apiVersion=" << foo.apiVersionAsStr() << "}";
+std::ostream &operator<<(std::ostream &os, const tdg::ApplicationInfo &foo) {
+    os << "tdg::ApplicationInfo{" <<
+       "pApplicationName=\"" << foo.pApplicationName << "\", " <<
+       "applicationVersion=" << foo.applicationVersionString() << ", " <<
+       "pEngineName=\"" << foo.pEngineName << "\", " <<
+       "engineVersion=" << foo.engineVersionString() << ", " <<
+       "apiVersion=" << foo.apiVersionString() << "}";
     return os;
 }
 

@@ -39,3 +39,4 @@ vulkantest
 # IDE files
 .idea
 Testing
+build
